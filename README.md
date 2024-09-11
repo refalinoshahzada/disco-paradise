@@ -1,15 +1,14 @@
 # disco-paradise
+## [Visit Disco Paradise here!](https://refalino-shahzada-discoparadisee.pbp.cs.ui.ac.id/)
 
-1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+### 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 **JAWAB**
 - Melakukan setup awal seperti menentukan nama, tema proyek dan pembuatan direktori dari proyek tersebut. Lalu install django dan membuat virtual environment. Lakukan pengecekan terhadap virtual environment jika ada masalah.
 - Buat requirements.txt yang berisi dengan segala macam dependencies yang akan digunakan dalam proyek django yang akan dibuat. 
 - membuat direktori proyek dengan menggunakan perintah django-admin startproject discoparadise . yang akan jadi direktori aplikasi saya.
 - Membuat direktori baru bernama main dengan menggunakan perintah python manage.py startapp main . yang akan menjadi bagian utama untuk konfigurasi aplikasi saya
-- Dengan terinisialisasinya main, saya lanjut membuat model dari aplikasi saya yang akan berlangsung pada models.py pada direktori main
-
-Atribut yang saya gunakan untuk proyek saya:
-
+- Dengan terinisialisasinya main, saya lanjut membuat model dari aplikasi saya yang akan berlangsung pada models.py pada direktori main. Atribut yang saya gunakan untuk proyek saya:
+```python
 from django.db import models
 
 class AlbumEntry(models.Model):
@@ -19,11 +18,11 @@ class AlbumEntry(models.Model):
     date_of_distribution = models.TextField()
     stock_available = models.IntegerField()
     genre = models.TextField()
-
+```
 - Setelah saya membuat model tersebut, saya melakukan imigrasi model ke basis data lokal.
 - Buat folder baru di dalam direktori main bernama templates, dimana di dalam direktori ini akan diisi dengan file html bernama main.html yang akan menampilkan segala macam models yang saya buat tadi.
 - Hubungkan template dengan views dengan pertama membuat fungsi show_main dalam file views.py seperti berikut: 
-
+```python
 from django.shortcuts import render
 
 # Create your views here.
@@ -38,9 +37,9 @@ def show_main(request):
     }
 
     return render(request, "main.html", context)
-
+```
 - Buatkan routing URL aplikasi main dengan mengisi urls.py dalam direktori templates sebagai berikut:
-
+```python
 from django.urls import path
 from main.views import show_main
 
@@ -49,9 +48,9 @@ app_name = 'main'
 urlpatterns = [
     path('', show_main, name='show_main'),
 ]
-
+```
 - Setelah membuat routing URL aplikasi main, saya membuat routing pada proyek agar dapat dijalankan. Caranya adalah untuk mengisi file urls.py dalam direktori disco_paradise sebagai berikut:
-
+```python
 from django.contrib import admin
 from django.urls import path, include
 
@@ -59,19 +58,32 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
 ]
+```
 
-2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
-***SAVE FOR LATER***
+### 2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
+***JAWAB***
+![Diagram Django Keren](DiagramDjango.png)
+- Client mengirim request ke server
+- urls.py melakukan URL routing yang menangkap request dan mengarahkan ke view yang sesuai 
+- views.py memoproses request tersebut, berinteraksi dengan model dan mengembalikan response
+- models.py berisi dengan model yang berinteraksi dengan database untuk mengambil dan menyimpan data
+- HTML Template merupakan hasil view yang di render dengan data yang diperoleh dari model dan mengembalikan response ke client.
 
-3. Jelaskan fungsi git dalam pengembangan perangkat lunak
+### 3. Jelaskan fungsi git dalam pengembangan perangkat lunak
 **JAWAB**
 Git memiliki beberapa fungsi untuk pengembangan perangkat lunak, beberapa dari fungsi tersebut adalah:
-1. Version Control: Git melacak setiap perubahan kode, sehingga developer dapat melihat riwayat versi dan bahkan beralih kepada versi sebelumnya jika ada kesalahan. Hal tersebut mungkin karena command fitur, reset dan checkout dalam git.
-2. Collaboration: Git membuka cara untuk melakukan kolaborasi antar developer yang mengerjakan suatu proyek bersama dengan adanya fitur branching dan merging.
-3. Deployment: Git memungkinkan developer untuk melakukan deployment ke production server secara mudah dengan adanya command push untuk mengirim versi terbaru dari repositori lokal ataupun pull untuk menerima versi terbaru dari server git.
+- Version Control: Git melacak setiap perubahan kode, sehingga developer dapat melihat riwayat versi dan bahkan beralih kepada versi sebelumnya jika ada kesalahan. Hal tersebut mungkin karena command fitur, reset dan checkout dalam git.
+- Collaboration: Git membuka cara untuk melakukan kolaborasi antar developer yang mengerjakan suatu proyek bersama dengan adanya fitur branching dan merging.
+- Deployment: Git memungkinkan developer untuk melakukan deployment ke production server secara mudah dengan adanya command push untuk mengirim versi terbaru dari repositori lokal ataupun pull untuk menerima versi terbaru dari server git.
 
-4. 
+### 4. Menurut Anda, dari semua framework yang ada, mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?
+***JAWAB*** 
+Django dijadikan permulaan pembelajaran pengembangan perangkat lunak karena alasan sebagai berikut:
+- Django sudah menyediakan banyak fitur bawaan untuk pengembangan aplikasi web
+- Django dirancang utuk menangani aplikasi yang kompleks
+- Django sudah menyediakan fitur berupa keamanan yang melindungi aplikasi dari ancaman
+- Django memiliki komunitas yang besar hingga dapat saling tanya dan belajar
 
-5. Mengapa model pada Django disebut sebagai ORM?
+### 5. Mengapa model pada Django disebut sebagai ORM?
 **JAWAB**
 Model pada Django disebut ORM karena mereka berfungsi untuk menghubungkan objek-objek dalam kode Python dengan tabel-tabel pada database relasional, seperti SQL. Dengan ORM, pengembang dapat berinteraksi dengan database menggunakan objek Python tanpa harus menulis perintah SQL secara langsung.
