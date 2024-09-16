@@ -19,4 +19,38 @@
 <h5>Genre: </h5>
 <p>{{ genre }}</p>
 
+<!-- IF THERE IS NOT DATA IN THE FORM -->
+{% if not album_entries %}
+<p>Belum ada data album pada Disco Paradise.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Album Name</th>
+    <th>Price</th>
+    <th>Description</th>
+    <th>Date of Distribution</th>
+    <th>Stock Available</th>
+    <th>Genre</th>
+  </tr>
+
+  {% comment %} Berikut cara memperlihatkan data album di bawah baris ini 
+  {% endcomment %} 
+  {% for album_entry in album_entries %}
+  <tr>
+    <td>{{album_entry.name}}</td>
+    <td>{{album_entry.price}}</td>
+    <td>{{album_entry.description}}</td>
+    <td>{{album_entry.date_of_distribution}}</td>
+    <td>{{album_entry.stock_available}}</td>
+    <td>{{album_entry.genre}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<br />
+
+<a href="{% url 'main:create_album_entry' %}">
+  <button>Add New Album Entry</button>
+</a>
 {% endblock content %}
