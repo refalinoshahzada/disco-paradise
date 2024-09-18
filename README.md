@@ -279,11 +279,12 @@ def show_json_by_id(request, id):
 3. Lalu pada berkas `urls.py` pada direktori `main` import semua fungsi tersebut serta tambahkan path url untuk mengakses masing-masing fungsi seperti berikut:
 
 ### 6. Mengakses keempat URL di poin 2 menggunakan Postman, membuat screenshot dari hasil akses URL pada Postman, dan menambahkannya ke dalam `README.md`.
+
 Pada XML:
 ![Show XML](show_xml.jpg)
 
 Pada JSON:
-![Show JSON](show_json.jgp)
+![Show JSON](show_json.jpg)
 
 Pada XML by ID:
 ![Show JSON by ID](show_xml_by_id.jpg)
