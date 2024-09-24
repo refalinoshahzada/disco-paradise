@@ -14,10 +14,10 @@ from django.urls import reverse
 # Create your views here.
 @login_required(login_url='/login')
 def show_main(request):
-    album_entries = AlbumEntry.objects.all()
+    album_entries = AlbumEntry.objects.filter(user=request.user)
 
     context = {
-        'name': 'Dark Side of the Moon',
+        'name': request.user.username,
         'price' : '650000',
         'description' : 'The Dark Side of the Moon is the eighth studio album by the English rock band Pink Floyd',
         'date_of_distribution' : '1 March 1973',
@@ -34,7 +34,9 @@ def create_album_entry(request):
     form = AlbumEntryForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        form.save()
+        album_entry = form.save(commit=False)
+        album_entry.user = request.user
+        album_entry.save()
         return redirect("main:show_main")
     
     context = {'form': form}
