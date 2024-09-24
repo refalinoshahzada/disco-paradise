@@ -1,5 +1,5 @@
 # disco-paradise
-## TUGAS 1
+## TUGAS 2
 ## [Visit Disco Paradise here!](https://refalino-shahzada-discoparadisee.pbp.cs.ui.ac.id/)
 
 ### 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
@@ -89,7 +89,7 @@ Django dijadikan permulaan pembelajaran pengembangan perangkat lunak karena alas
 **JAWAB**
 Model pada Django disebut ORM karena mereka berfungsi untuk menghubungkan objek-objek dalam kode Python dengan tabel-tabel pada database relasional, seperti SQL. Dengan ORM, pengembang dapat berinteraksi dengan database menggunakan objek Python tanpa harus menulis perintah SQL secara langsung.
 
-## TUGAS 2
+## TUGAS 3
 
 ### 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
 **JAWAB**
@@ -291,3 +291,28 @@ Pada XML by ID:
 
 Pada JSON by ID:
 ![Show JSON by ID](show_json_by_id.jpg)
+
+## TUGAS 4
+### 1. Apa itu Django `UserCreationForm`, dan jelaskan apa kelebihan dan kekurangannya?
+UserCreation form pada django merupakan sistem autentikasi yang dibuat langsung di dalam frameworknya. Fungsinya untuk membuat user baru dengan menggunakan username, password dan password confirmation.
+
+***Kelebihan:**
+- UserCreationForm merupakan bawaan dari Django hingga mudah untuk diakses dan digunakan
+- Kemanan sistem yang sangat baik karena password hashing
+- Form autentikasinya dapat disesuaikan dengan kemauan user
+
+**Kekurangan:**
+- Hanya memiliki form username dan password, jika ingin lebih banyak form harus di extend
+- Form default tidak memiliki UX yang baik, kekurangan indikator kekuatan password dan sebagainya.
+- Biarpun form dapat di extend untuk memiliki lebih banyak field, tetap sulit dan membutuhkan pemahaman Django yang cukup banyak
+
+### 2. Apa perbedaan antara autentikasi dan otorisasi dalam konteks Django, dan mengapa keduanya penting?
+Autentikasi dan otorisasi adalah 2 konsep berbeda namun saling terkait dan keduanya sangat penting dalam menjaga keamanan aplikasi. 
+
+**Autentikasi**
+Autentikasi adalah proses memverifikasi identitas pengguna. Dalam kata lain menentukan siapa yang masuk ke sistem. Sebagai contoh dari proses autentikasi adalah ketika pengguna masukkan username dan password pada halaman login, Django menggunakan sistem autentikasi bawaan untuk memverifikasi apakah kredensial tersebut cocok dengan data yang disimpan pada database.
+
+**Otorisasi**
+Otorisasi adalah proses untuk menentukan apa yang bisa dilakukan oleh pengguna yang telah diautentikasi. Otorisasi menentukan izin dan hak akses yang dimiliki oleh pengguna. Sebagai contoh dari proses otorisasi adalah ketika pengguna masuk ke akun mereka, otorisasi memeriksa apakah pengguna tersebut memiliki izin untuk mengakses halaman admin, mengedit data, menghapus konten. 
+
+**Mengapa keduanya penting**
