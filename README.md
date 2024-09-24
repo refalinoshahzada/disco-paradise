@@ -316,3 +316,26 @@ Autentikasi adalah proses memverifikasi identitas pengguna. Dalam kata lain mene
 Otorisasi adalah proses untuk menentukan apa yang bisa dilakukan oleh pengguna yang telah diautentikasi. Otorisasi menentukan izin dan hak akses yang dimiliki oleh pengguna. Sebagai contoh dari proses otorisasi adalah ketika pengguna masuk ke akun mereka, otorisasi memeriksa apakah pengguna tersebut memiliki izin untuk mengakses halaman admin, mengedit data, menghapus konten. 
 
 **Mengapa keduanya penting**
+Ada beberapa alasan mengapa kedua hal tersebut penting, beberapa dari hal tersebut adalah:
+- Keamanan aplikasi: Autentikasi memastikan hanya pengguna yang sah yang dapat masuk ke dalam sistem dan otorisasi akan memastikan bahwa pengguna tersebut hanya bisa mengakses bagian yang diizinkan kepada mereka.
+- Privasi dan hak akses: Otorisasi menjaga agar pengguna hanya bisa mengakses data dan fitur yang relevan dengan peran atau izin mereka. 
+- User experience: Dengan memisahkan autentikasi dan otorisasi, aplikasi dapat memberikan user experience yang lebih aman dan terstruktur.
+
+### 3. Apa itu cookies dalam konteks aplikasi web, dan bagaimana Django menggunakan cookies untuk mengelola data sesi pengguna?
+**Apa itu cookies dalam konteks aplikasi web?**
+Cookies adalah file kecil yang disimpan oleh browser di perangkat pengguna ketika mereka mengunjungi situs web. Cookies digunakan untuk menyimpan data kecil yang bisa dikirim kembali ke server setiap kali pengguna membuat permintaan baru. Cookies membantu aplikasi web untuk mengingat pengguna atau informasi tentang sesi mereka saat berpindah-pindah antara halaman atau ketika kembali ke situs di lain waktu.
+
+**Bagaimana Django menggunakan cookies untuk mengelola data sesi pengguna?**
+Django menggunakan cookies untuk mengelola sesi pengguna, sehingga situs web dapat mengingat pengguna di antara permintaan HTTP. Sebagai contoh, dengan sistem sesi Django, pengguna dapat memiliki preferensi terhadap sesuatu yang diingat dan tidak harus dikirim ulang di setiap halaman. Untuk bagaimana cara kerjanya sebagai berikut:
+  1. Ketika pengguna pertama kali mengunjungi aplikasi Django, cookie `sessionid` disimpan di browser mereka, cookie ini berisi dengan ID sesi unik yang dihasilkan secara acak.
+  2. Django menyimpan data sesi pengguna di server. Data yang disimpan bisa berupa status login atau informasi sementara lainnya. ID sesi yang disimpan ini memungkinkan Django untuk mengambil dan menggunakan data sesi ketika pengguna mengirim permintaan baru.
+  3. Setiap kali pengguna mengirim permintaan HTTP, Django membaca cookie `sessionid` dari broser tersebut. Jika cocok, Django akan mengembalikan data sesi yang terkait dengan pengguna tersebut. Jika sesi pengguna berakhir atau logout, Django akan menghapus data sesi di server dan cookie `sessionid`.
+  4. Django menggunakan cookies untuk keamanan, dengan menerapkan token CSRF untuk mencegah serangan Cross-Site Request Forgery. Ini melibatkan penyimpenan token CSRF di cookie, yang kemudian diverifikasi setiap kali pengguna mengirimkan permintaan POST.
+
+### 4. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai?
+Penggunaan cookies dalam pengembangan web tidak sepenuhnya aman secara default. Ada beberapa risiko yang harus diwaspadai, terutama karena cookies dapat digunakan untuk menyimpan data sensitif. Beberapa risiko potensial dalam penggunaan cookies adalah:
+- XSS atau Serangan Cross-Site Scripting dimana penyerang mengimplementasikan sebuah skrip berbahaya ke dalam aplikasi web yang dapat mengambil data sesi pengguna sebuah pengguna
+- Serangan CSRF atau Cross-Site Request Forgery adalah serangan di mana penyerang mencoba membuat pengguna yang sudah terautentikasi mengirimkan permintaan yang tidak sah kepada server tanpa sepengetahuan mereka. 
+- Serangan cookie theft terjadi ketika penyerang mencuri cookie dari pengguna, biasanya melalui jaringan yang tidak aman seperti Wi-Fi publik.
+
+### 5.  
