@@ -338,4 +338,206 @@ Penggunaan cookies dalam pengembangan web tidak sepenuhnya aman secara default. 
 - Serangan CSRF atau Cross-Site Request Forgery adalah serangan di mana penyerang mencoba membuat pengguna yang sudah terautentikasi mengirimkan permintaan yang tidak sah kepada server tanpa sepengetahuan mereka. 
 - Serangan cookie theft terjadi ketika penyerang mencuri cookie dari pengguna, biasanya melalui jaringan yang tidak aman seperti Wi-Fi publik.
 
-### 5.  
+### 5.  Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+**Mengimplementasikan fungsi registrasi, login, dan logout untuk memungkinkan pengguna untuk mengakses aplikasi sebelumnya dengan lancar.**
+  1. Membuat fungsi dan form registrasi
+  Pada file `views.py` saya import `UserCreationForm` dan `messages`. Kemudian saya tambahkan fungsi `register` pada file yang sama seperti berikut:
+  ```python
+  def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+  ```
+  Dimana fungsi ini akan menghasilkan form registrasi secara otomatis dan akan menghasilkan akun pengguna ketika di submit dari form. Setelah itu, saya membuat kerangka halaman registrasi dengan membuat file html baru bernama `register.html` dengan isi berikut:
+  ```html
+  {% extends 'base.html' %}
+
+  {% block meta %}
+  <title>Register</title>
+  {% endblock meta %}
+
+  {% block content %}
+
+  <div class="login">
+    <h1>Register</h1>
+
+    <form method="POST">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input type="submit" name="submit" value="Daftar" /></td>
+        </tr>
+      </table>
+    </form>
+
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+  {% endblock content %}
+  ```
+  Html tersebut yang akan menjadi kerangka dari halaman register saya. Kemudian saya hubungkan form register serta kerangkanya dengan url tertentu dengan membuka `urls.py` dan menambahkan path untuk register.
+
+  2. Membuat fungsi dan form login
+  Sebelum mulai, saya import `Authenticate`, `login`, dan `AuthenticationForm` pada berkas `views.py` kemudian menambahkan fungsi `login_user` pada berkas yang sama seperti berikut:
+  ```python
+  def login_user(request):
+   if request.method == 'POST':
+      form = AuthenticationForm(data=request.POST)
+
+      if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('main:show_main')
+
+   else:
+      form = AuthenticationForm(request)
+   context = {'form': form}
+   return render(request, 'login.html', context)
+   ```
+  Setelah saya membuat fungsi login, saya membuat kerangka yang akan di display di website dengan file html baru bernama `login.html` yang berisi sebagai berikut:\
+  ```html
+  {% extends 'base.html' %}
+
+  {% block meta %}
+  <title>Login</title>
+  {% endblock meta %}
+
+  {% block content %}
+  <div class="login">
+    <h1>Login</h1>
+
+    <form method="POST" action="">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input class="btn login_btn" type="submit" value="Login" /></td>
+        </tr>
+      </table>
+    </form>
+
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} Don't have an account yet?
+    <a href="{% url 'main:register' %}">Register Now</a>
+  </div>
+
+  {% endblock content %}
+  ```
+  Kemudian saya routing kerangka dan fungsi tersebut dengan import fungsi `login_user` dan menambahkan path url baru pada `urlpatterns`
+
+  3. Membuat fungsi logout
+  Pada `views.py`, saya import `logout` dan menambahkan fungsi `logout_user` yang berfungsi sebagai mekanisme logout seperti berikut:
+  ```python
+  def logout_user(request):
+    logout(request)
+    return redirect('main:login')
+  ```
+  Kemudian pada berkas `main.html` saya tambahkan button logout seperti berikut:
+  ```html
+  <a href="{% url 'main:logout' %}">
+    <button>Logout</button>
+  </a>
+  ```
+  Kemudian pada `urls.py` saya import fungsi `logout_user` dan tambahkan url path baru pada `urlpatterns` dengan url baru untuk logout.
+
+  4. Merestriksi Akses Halaman Main Sebelum Login
+  Pada berkas `views.py` saya import `login_required` dan tambahkan potongan kode `login_required` sebelum fungsi `show_main` seperti berikut:
+  ```python
+  @login_required(login_url='/login')
+  ```
+
+**Membuat dua akun pengguna dengan masing-masing tiga dummy data menggunakan model yang telah dibuat pada aplikasi sebelumnya untuk setiap akun di lokal.**
+  Dengan implementasinya feature register, login dan logout, untuk membuat dua akun pengguna saya menggunakan feature register saya untuk membuat 2 akun pengguna. Kemudian pada tiap pengguna saya menambahkan album entry sebanyak 3 album.
+
+**Menghubungkan model Product dengan User.**
+  1. Pada `models.py` saya import `User` dan ubah variabel user menjadi sebagai berikut:
+  ```python
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  ```
+  2. Pada `views.py` saya ubah potongan kode pada fungsi `create_album_entry` sebagai berikut:
+  ```python
+  def create_album_entry(request):
+    form = AlbumEntryForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        album_entry = form.save(commit=False)
+        album_entry.user = request.user
+        album_entry.save()
+        return redirect("main:show_main")
+    
+    context = {'form': form}
+    return render(request, "create_album_entry.html", context)
+  ```
+  3. Saya ubah value pada variabel `album_entries` dan `context` pada fungsi `show_main` seperti berikut:
+  ```python
+  def show_main(request):
+    album_entries = AlbumEntry.objects.filter(user=request.user)
+
+    context = {
+        'name': request.user.username,
+        'price' : '650000',
+        'description' : 'The Dark Side of the Moon is the eighth studio album by the English rock band Pink Floyd',
+        'date_of_distribution' : '1 March 1973',
+        'stock_available' : 10,
+        'genre' : 'rock',
+        'album_entries': album_entries,
+        'last_login': request.COOKIES['last_login'],
+    }
+
+    return render(request, "main.html", context)
+  ```
+  4. Lakukan migrasi model pada Django menggunakan `python manage.py makemigrations` dan menetapkan user yang sudah ada dengan ID 1. Kemudian lakukan `python manage.py migrate` untuk mengaplikasikan migrasi yang dilakukan pada poin sebelumnya. Kemudian saya setup aplikasi web kita untuk environment production dengan import `os` pada `settings.py` di subdirektori `disco_paradise` kemudian ganti variabel `DEBUG` seperti berikut:
+  ```python
+  PRODUCTION = os.getenv("PRODUCTION", False)
+  DEBUG = not PRODUCTION
+  ```
+
+**Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last login pada halaman utama aplikasi.**
+  1. Pada `views.py` import `HttpResponseRedirect`, `reverse` dan `datetime`
+  2. Tambahkan fungsionalitas menambahkan cookie pada fungsi  `login_user` bernama `last_login` dengan menggantikan kode sebagai berikut:
+  ```python
+  def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+  ```
+  Setelah itu, pada fungsi `show_main` saya tambahkan potongan kode `last_login` seperti berikut:
+  ```python
+  'last_login': request.COOKIES['last_login'],
+  ```
+  Saya ubah fungsi `logout_user` seperti berikut:
+  ```python
+  def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
+  ```
+  3. Tambahkan kerangka pada `main.html` untuk display sesi terakhir login anda.
