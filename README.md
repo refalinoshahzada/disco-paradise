@@ -547,7 +547,20 @@ Penggunaan cookies dalam pengembangan web tidak sepenuhnya aman secara default. 
 Untuk prioritas pengambilan CSS selector, ada yang namanya CSS Specificity. Dimana jika ada 2 atau lebih selector CSS yang mengarah kepada elemen yang sama, selector yang memiliki specificity paling tinggi akan deklarasikan style untuk element HTML tersebut.
 
 Setiap CSS Selector memiliki tempat pada hirarki specificity. Hirarki specificity dibagi menjadi 4 kategori yaitu:
-  1. Inline Styles (<h1 style="color: pink;">)
-  2. IDS
-  3. Classes, pseudo-classes, attribute selectors
-  4. Elements and pseudo-elements
+  1. Inline Styles (`<h1 style="color: pink;">`)
+  2. IDS (`#navbar)
+  3. Classes, pseudo-classes, attribute selectors (`.test, :hover, [href]`)
+  4. Elements and pseudo-elements (`h1, ::before`)
+Inline Style selalu memiliki specificity paling tinggi, dengan pengecualian ada peraturan `!important` dimana itu akan pasti mengalahkan selector lain.
+
+### 2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+Responsive Web Design atau RWD adalah salah satu cara dalam web design untuk mengimplementasikan web page yang merender dengan baik pada berbagai macam perangkat berbeda untuk memastikan user experience yang baik. RWD penting dalam pengembangan aplikasi web karena beberapa alasan yaitu:
+  1. User experience yang lebih baik
+  2. Search Engine Optimization
+  3. Penghematan waktu dan biaya
+  4. Menjangkau lebih banyak pengguna
+  5. Menyesuaikan performa perangkat
+
+- Contoh aplikasi web yang menggunakan RWD adalah Twitter/X
+- Contoh aplikasi web yang tidak menggunakan RWD adalah 4chan
+
