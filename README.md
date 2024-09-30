@@ -562,5 +562,31 @@ Responsive Web Design atau RWD adalah salah satu cara dalam web design untuk men
   5. Menyesuaikan performa perangkat
 
 - Contoh aplikasi web yang menggunakan RWD adalah Twitter/X
-- Contoh aplikasi web yang tidak menggunakan RWD adalah 4chan
+- Contoh aplikasi web yang tidak menggunakan RWD adalah SIAKNG
 
+### 3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Pada CSS, margin adalah ruang diluar sebuah border pada suatu element. 
+Contoh implementasi margin:
+```html
+div {
+  margin: 20px; /* 20px space around the element outside its border */
+}
+```
+Border adalah garis yang mengelilingi padding dan content pada suatu element. Border juga memisahkan padding dengan margin.
+Contoh implementasi border:
+```html
+div {
+  border: 2px solid black; /* Black solid border, 2px wide */
+}
+```
+Padding adalah ruang yang ada di dalam border suatu element. Padding dapat menambahkan ukuran dari sebuah element tanpa menambahkan ruang diluarnya.
+Contoh implementasi padding:
+```html
+div {
+  padding: 10px; /* 10px space between the content and the border */
+}
+```
+
+### 4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Flexbox dan grid layout merupakan dua teknik tata letak satu dimensi yang berfungsi untuk membuat desain web yang responsif dan lebih fleksibel. Mereka memiliki kegunaan dan cara kerja masing-masiung seperti berikut. 
+**Flexbox**
