@@ -541,3 +541,13 @@ Penggunaan cookies dalam pengembangan web tidak sepenuhnya aman secara default. 
     return response
   ```
   3. Tambahkan kerangka pada `main.html` untuk display sesi terakhir login anda.
+
+## TUGAS 5
+### 1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Untuk prioritas pengambilan CSS selector, ada yang namanya CSS Specificity. Dimana jika ada 2 atau lebih selector CSS yang mengarah kepada elemen yang sama, selector yang memiliki specificity paling tinggi akan deklarasikan style untuk element HTML tersebut.
+
+Setiap CSS Selector memiliki tempat pada hirarki specificity. Hirarki specificity dibagi menjadi 4 kategori yaitu:
+  1. Inline Styles (```html <h1 style="color: pink;">```)
+  2. IDS
+  3. Classes, pseudo-classes, attribute selectors
+  4. Elements and pseudo-elements
