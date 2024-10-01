@@ -600,3 +600,5 @@ Flexbox dan grid layout merupakan dua teknik tata letak satu dimensi yang berfun
     - Membuat tata letak yang kompleks dengan baris dan kolom
     - Memungkinkan penempatan elemen di posisi tertentu dalam grid
     - Membantu dalam desain responsif dengan menggunakan fraksi dan area grid
+
+### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
