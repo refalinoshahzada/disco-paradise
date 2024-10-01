@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from main.forms import AlbumEntryForm
 from main.models import AlbumEntry
 from django.http import HttpResponse
@@ -95,3 +95,28 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+# Edit Album
+def edit_album(request, id):
+    # Get album entry berdasarkan id
+    album = AlbumEntry.objects.get(pk = id)
+
+    # Set album entry sebagai instance dari form
+    form = AlbumEntryForm(request.POST or None, instance=album)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_album.html", context)
+
+# Delete Album
+def delete_album(request, id):
+    # Get album berdasarkan id
+    album = AlbumEntry.objects.get(pk = id)
+    # Hapus album
+    album.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('main:show_main'))

@@ -43,6 +43,20 @@
     <td>{{album_entry.date_of_distribution}}</td>
     <td>{{album_entry.stock_available}}</td>
     <td>{{album_entry.genre}}</td>
+    <td>
+      <a href="{% url 'main:edit_album' album_entry.pk %}">
+          <button>
+              Edit
+          </button>
+      </a>
+    </td>
+    <td>
+      <a href="{% url 'main:delete_album' album_entry.pk %}">
+          <button>
+              Delete
+          </button>
+      </a>
+    </td>
   </tr>
   {% endfor %}
 </table>
