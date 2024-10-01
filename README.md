@@ -551,6 +551,7 @@ Setiap CSS Selector memiliki tempat pada hirarki specificity. Hirarki specificit
   2. IDS (`#navbar)
   3. Classes, pseudo-classes, attribute selectors (`.test, :hover, [href]`)
   4. Elements and pseudo-elements (`h1, ::before`)
+  
 Inline Style selalu memiliki specificity paling tinggi, dengan pengecualian ada peraturan `!important` dimana itu akan pasti mengalahkan selector lain.
 
 ### 2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
@@ -565,21 +566,21 @@ Responsive Web Design atau RWD adalah salah satu cara dalam web design untuk men
 - Contoh aplikasi web yang tidak menggunakan RWD adalah SIAKNG
 
 ### 3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
-Pada CSS, margin adalah ruang diluar sebuah border pada suatu element. 
+Pada CSS, **margin** adalah ruang diluar sebuah border pada suatu element. 
 Contoh implementasi margin:
 ```html
 div {
   margin: 20px; /* 20px space around the element outside its border */
 }
 ```
-Border adalah garis yang mengelilingi padding dan content pada suatu element. Border juga memisahkan padding dengan margin.
+**Border** adalah garis yang mengelilingi padding dan content pada suatu element. Border juga memisahkan padding dengan margin.
 Contoh implementasi border:
 ```html
 div {
   border: 2px solid black; /* Black solid border, 2px wide */
 }
 ```
-Padding adalah ruang yang ada di dalam border suatu element. Padding dapat menambahkan ukuran dari sebuah element tanpa menambahkan ruang diluarnya.
+**Padding** adalah ruang yang ada di dalam border suatu element. Padding dapat menambahkan ukuran dari sebuah element tanpa menambahkan ruang diluarnya.
 Contoh implementasi padding:
 ```html
 div {
@@ -589,4 +590,13 @@ div {
 
 ### 4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
 Flexbox dan grid layout merupakan dua teknik tata letak satu dimensi yang berfungsi untuk membuat desain web yang responsif dan lebih fleksibel. Mereka memiliki kegunaan dan cara kerja masing-masiung seperti berikut. 
-**Flexbox**
+  1. **Flexbox**
+  Model tata letak satu dimensi yang memungkinkan elemen di dalam kontainer untuk disusun secara fleksibel. Dengan flexbox, Anda bisa mengatur susunan elemen baik secara horizontal maupun vertikal. Beberapa kegunaan dari flexbox adalah:
+    - Menyusun elemen dalam satu baris atau kolom
+    - Mengatur spasi antar elemen dengan mudah
+    - Memusatkan elemen dalam kontainer
+  2. **Grid Layout**
+  Model tata letak dua dimensi yang memungkinkan Anda untuk membuat struktur grid (baris dan kolom) untuk menyusun elemen. Anda bisa mengatur ukuran, posisi, dan spasi elemen di dalam grid. Beberapa kegunaan  dari grid layout adalah:
+    - Membuat tata letak yang kompleks dengan baris dan kolom
+    - Memungkinkan penempatan elemen di posisi tertentu dalam grid
+    - Membantu dalam desain responsif dengan menggunakan fraksi dan area grid
