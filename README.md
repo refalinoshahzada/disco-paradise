@@ -602,3 +602,85 @@ Flexbox dan grid layout merupakan dua teknik tata letak satu dimensi yang berfun
     - Membantu dalam desain responsif dengan menggunakan fraksi dan area grid
 
 ### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+- [x] **Implementasikan fungsi untuk menghapus dan mengedit product.**
+  1. Pada `views.py` tambahkan import:
+  ```python
+  from django.shortcuts import .., reverse
+  from django.http import .., HttpResponseRedirect
+  ```
+  2. Pada `views.py` di subdirektori `main`, saya buat fungsi baru bernama `edit_album` yang berfungsi untuk edit sebuah album entry baru sebagai berikut:
+  ```python
+  def edit_album(request, id):
+    # Get album entry berdasarkan id
+    album = AlbumEntry.objects.get(pk = id)
+
+    # Set album entry sebagai instance dari form
+    form = AlbumEntryForm(request.POST or None, instance=album)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_album.html", context)
+  ```
+  3. Saya buat berkas html baru bernama `edit_album.html` pada subdirektori `templates` yang digunakan sebagai kerangka display fitur edit sebuah entry album. Isi dari berkas tersebut sebagai berikut:
+  ```html
+    {% extends 'base.html' %}
+
+  {% load static %}
+
+  {% block content %}
+
+  <h1>Edit Album Entry</h1>
+
+  <form method="POST">
+      {% csrf_token %}
+      <table>
+          {{ form.as_table }}
+          <tr>
+              <td></td>
+              <td>
+                  <input type="submit" value="Edit Album Entry"/>
+              </td>
+          </tr>
+      </table>
+  </form>
+
+  {% endblock %}
+  ```
+  4. Kemudian pada file `urls.py` saya import fungsi `edit_album` dari `views.py` kemudian menambahkan path agar jika tombol `edit` di klik pada aplikasi web akan dibawa ke halaman web edit album.
+  5. Untuk menambahkan tombol `edit` yang saya sebutkan tadi, saya tambahkan pada berkas `main.html` seperti berikut:
+  ```html
+  <td>
+      <a href="{% url 'main:edit_album' album_entry.pk %}">
+          <button>
+              Edit
+          </button>
+      </a>
+  </td>
+  ```
+  6. Untuk menambahkan fitur hapus entry album, pada `views.py` saya tambahkan fungsi baru bernama `delete_album` yang berfungsi untuk menghapus entry album dari AlbumEntry sebagai berikut:
+  ```python
+  def delete_album(request, id):
+    # Get album berdasarkan id
+    album = AlbumEntry.objects.get(pk = id)
+    # Hapus album
+    album.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('main:show_main'))
+  ```
+  7. Kemudian pada berkas `urls.py` saya import fungsi tersebut dari `views.py` dan tambahkan path tersendiri 
+  8. Saya menambahkan tombol delete entry album pada berkas `main.html` sebagai berikut:
+  ```html
+  <td>
+      <a href="{% url 'main:delete_album' album_entry.pk %}">
+          <button>
+              Delete
+          </button>
+      </a>
+  </td>
+  ```
+
+- [x] **Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebelumnya menggunakan CSS atau CSS framework (seperti Bootstrap, Tailwind, Bulma) dengan ketentuan sebagai berikut:**
