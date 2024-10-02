@@ -18,13 +18,10 @@ def show_main(request):
 
     context = {
         'name': request.user.username,
-        'price' : '650000',
-        'description' : 'The Dark Side of the Moon is the eighth studio album by the English rock band Pink Floyd',
-        'date_of_distribution' : '1 March 1973',
-        'stock_available' : 10,
-        'genre' : 'rock',
-        'album_entries': album_entries,
+        'npm': 2306152203,
+        'kelas': 'PBP C',
         'last_login': request.COOKIES['last_login'],
+        'album_entries': album_entries
     }
 
     return render(request, "main.html", context)

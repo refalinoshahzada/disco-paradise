@@ -684,3 +684,398 @@ Flexbox dan grid layout merupakan dua teknik tata letak satu dimensi yang berfun
   ```
 
 - [x] **Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebelumnya menggunakan CSS atau CSS framework (seperti Bootstrap, Tailwind, Bulma) dengan ketentuan sebagai berikut:**
+  Pada `base.html`, saya tambahkan tailwind sebagai framework CSS yang digunakan sebagai berikut:
+  ```html
+  <head>
+  {% block meta %}
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% endblock meta %}
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  </head>
+  ```
+- [x] **Kustomisasi halaman login, register, dan tambah product semenarik mungkin.
+  Dengan menggunakan CSS, saya kustomisasi halaman login sebagai berikut:**
+  ```html
+  {% extends 'base.html' %}
+
+  {% block meta %}
+  <title>Login</title>
+  {% endblock meta %}
+
+  {% block content %}
+  <div class="min-h-screen flex items-center justify-center w-screen bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-100">
+          Login to your account
+        </h2>
+      </div>
+      <form class="mt-8 space-y-6" method="POST" action="">
+        {% csrf_token %}
+        <input type="hidden" name="remember" value="true">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="username" class="sr-only">Username</label>
+            <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-500 placeholder-gray-400 text-gray-100 bg-gray-700 rounded-t-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" placeholder="Username">
+          </div>
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-500 placeholder-gray-400 text-gray-100 bg-gray-700 rounded-b-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" placeholder="Password">
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            Sign in
+          </button>
+        </div>
+      </form>
+
+      {% if messages %}
+      <div class="mt-4">
+        {% for message in messages %}
+        {% if message.tags == "success" %}
+          <div class="bg-green-900 border border-green-700 text-green-400 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ message }}</span>
+          </div>
+        {% elif message.tags == "error" %}
+          <div class="bg-red-900 border border-red-700 text-red-400 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ message }}</span>
+          </div>
+        {% else %}
+          <div class="bg-gray-900 border border-gray-700 text-gray-400 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ message }}</span>
+          </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="text-center mt-4">
+        <p class="text-sm text-gray-300">
+          Don't have an account yet?
+          <a href="{% url 'main:register' %}" class="font-medium text-red-400 hover:text-red-300">
+            Register Now
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endblock content %}
+  ```
+  Halaman register:
+  ```html
+  {% extends 'base.html' %}
+
+  {% block meta %}
+  <title>Register</title>
+  {% endblock meta %}
+
+  {% block content %}
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 form-style">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-black">
+          Create your account
+        </h2>
+      </div>
+      <form class="mt-8 space-y-6" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="remember" value="true">
+        <div class="rounded-md shadow-sm -space-y-px">
+          {% for field in form %}
+            <div class="{% if not forloop.first %}mt-4{% endif %}">
+              <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-black">
+                {{ field.label }}
+              </label>
+              <div class="relative">
+                {{ field }}
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  {% if field.errors %}
+                    <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  {% endif %}
+                </div>
+              </div>
+              {% if field.errors %}
+                {% for error in field.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div>
+          <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Register
+          </button>
+        </div>
+      </form>
+
+      {% if messages %}
+      <div class="mt-4">
+        {% for message in messages %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span class="block sm:inline">{{ message }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="text-center mt-4">
+        <p class="text-sm text-black">
+          Already have an account?
+          <a href="{% url 'main:login' %}" class="font-medium text-indigo-200 hover:text-indigo-300">
+            Login here
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endblock content %}
+  ```
+
+  Tambah product:
+  ```html
+  {% extends 'base.html' %} 
+  {`% load static %}
+  {% block meta %}
+  <title>Add New Album Entry</title>
+  {% endblock meta %}
+
+  {% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="flex flex-col min-h-screen bg-gray-100">
+    <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+      <h1 class="text-3xl font-bold text-center mb-8 text-black">Add New Album Entry</h1>
+
+      <div class="bg-white shadow-md rounded-lg p-6 form-style">
+        <form method="POST" class="space-y-6">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="flex flex-col">
+              <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700">
+                {{ field.label }}
+              </label>
+              <div class="w-full">
+                {{ field }}
+              </div>
+              {% if field.help_text %}
+                <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+              {% endif %}
+              {% for error in field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          <div class="flex justify-center mt-6">
+            <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out w-full">
+              Add Album Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+  ```
+
+- [x] **Kustomisasi halaman daftar product menjadi lebih menarik dan responsive. Kemudian, perhatikan kondisi berikut:**
+ - Jika pada aplikasi belum ada product yang tersimpan, halaman daftar product akan menampilkan gambar dan pesan bahwa belum ada product yang terdaftar.
+ - Jika sudah ada product yang tersimpan, halaman daftar product akan menampilkan detail setiap product dengan menggunakan card (tidak boleh sama persis dengan desain pada Tutorial!).
+
+  Saya kustomisasi daftar produk dan halaman produk dengan menggunakan `main.html`, `card_album.html` dan `card_info.html`. `main.html` seperti ini:
+  ```html
+  {% extends 'base.html' %}
+  {% load static %}
+
+  {% block meta %}
+  <title>Disco Paradise</title>
+  {% endblock meta %}
+
+  {% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-800 flex flex-col">
+      <!-- Profile Information Section -->
+      <div class="px-3 mb-4">
+          <div class="flex rounded-md items-center bg-red-600 py-2 px-4 w-fit">
+              <h1 id="nama-refalino-shahzada-ghassanai" class="text-white text-center">Nama: Refalino Shahzada Ghassanai</h1>
+          </div>
+          <h5 id="kelas-pbp-c" class="text-gray-300">Kelas: PBP C</h5>
+      </div>
+
+      <!-- Album Info Display -->
+      <div class="p-2 mb-6 relative">
+          <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
+              {% include "card_info.html" with title='Nama' value=name %}
+              {% include "card_info.html" with title='NPM' value=npm %}
+              {% include "card_info.html" with title='Kelas' value=kelas %}
+          </div>
+
+          <div class="w-full px-6 absolute top-[44px] left-0 z-20 hidden md:flex">
+              <div class="w-full min-h-4 bg-red-600"></div>
+          </div>
+
+          <div class="h-full w-full py-6 absolute top-0 left-0 z-20 md:hidden flex">
+              <div class="h-full min-w-4 bg-red-600 mx-auto"></div>
+          </div>
+      </div>
+
+      <!-- Last Login Section -->
+      <div class="px-3 mb-4">
+          <div class="flex rounded-md items-center bg-red-600 py-2 px-4 w-fit">
+              <h1 id="last-login-last_login" class="text-white text-center">Last Login: {{last_login}}</h1>
+          </div>
+      </div>
+
+      <!-- Add New Album Button -->
+      <div class="flex justify-end mb-6">
+          <a href="{% url 'main:create_album_entry' %}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+              Add New Album Entry
+          </a>
+      </div>
+
+      <!-- Album List Section -->
+      {% if album_entries %}
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
+          <!-- Album Card Display -->
+          {% for album_entry in album_entries %}
+              {% include "card_album.html" with album_entry=album_entry %}
+          {% endfor %}
+      </div>
+      {% else %}
+      <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+          <img src="{% static 'image/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4">
+          <p class="text-gray-300">Belum ada data album pada Disco Paradise.</p>
+      </div>
+      {% endif %}
+
+      <!-- Logout Section -->
+      <div class="flex justify-end mt-6">
+          <a href="{% url 'main:logout' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+              Logout
+          </a>
+      </div>
+  </div>
+
+  {% endblock content %}
+  ```
+  `card_info.html`:
+  ```html
+    <div class="bg-red-600 rounded-xl overflow-hidden border-2 border-red-700">
+      <div class="p-4 animate-shine">
+        <h5 class="text-lg font-semibold text-gray-200">{{ title }}</h5>
+        <p class="text-gray-100">{{ value }}</p>
+      </div>
+    </div>
+    ```
+    `card_album.html`:
+    ```html
+    <div class="relative break-inside-avoid">
+    <!-- Decorative Elements (No change needed) -->
+    <div class="absolute top-2 z-10 left-1/2 -translate-x-1/2 flex items-center -space-x-2">
+      <div class="w-[3rem] h-8 bg-gray-300 rounded-md opacity-80 -rotate-90"></div>
+      <div class="w-[3rem] h-8 bg-gray-300 rounded-md opacity-80 -rotate-90"></div>
+    </div>
+    
+    <!-- Main Album Card -->
+    <div class="relative top-5 bg-gray-700 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-red-600 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+      <!-- Header Section (Title and Date) -->
+      <div class="bg-red-600 text-gray-100 p-4 rounded-t-lg border-b-2 border-red-700">
+        <h3 class="font-bold text-xl mb-2">{{album_entry.name}}</h3>
+        <p class="text-gray-300">{{album_entry.date_of_distribution}}</p>
+      </div>
+
+      <!-- Album Info Section -->
+      <div class="p-4">
+        <p class="font-semibold text-lg mb-2 text-red-400">Price: ${{album_entry.price}}</p>
+        <p class="text-gray-200 mb-2">
+          <span class="bg-[linear-gradient(to_bottom,transparent_0%,transparent_calc(100%_-_1px),#FFEEEE_calc(100%_-_1px))] bg-[length:100%_1.5rem] pb-1">{{album_entry.description}}</span>
+        </p>
+
+        <!-- Stock and Genre Info -->
+        <div class="mt-4">
+          <p class="text-gray-300 font-semibold mb-2">Stock Available: {{album_entry.stock_available}}</p>
+          <p class="text-gray-300 font-semibold">Genre: {{album_entry.genre}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit and Delete Buttons -->
+    <div class="absolute top-0 -right-4 flex space-x-1">
+      <a href="{% url 'main:edit_album' album_entry.pk %}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg>
+      </a>
+      <a href="{% url 'main:delete_album' album_entry.pk %}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+      </a>
+    </div>
+  </div>
+  ```
+
+- [x] **Untuk setiap card product, buatlah dua buah button untuk mengedit dan menghapus product pada card tersebut!**
+Untuk melakukan hal tersebut, saya sudah kustomisasi pada step sebelumnya.
+
+- [x] **Buatlah navigation bar (navbar) untuk fitur-fitur pada aplikasi yang responsive terhadap perbedaan ukuran device, khususnya mobile dan desktop.**
+Untuk membuat navbar, saya mengisi berkas `navbar.html` sebagai berikut:
+```html
+<nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="flex items-center justify-between h-16">
+    <div class="flex items-center">
+      <a href="{% url 'main:show_main' %}" class="flex items-center">
+        <h1 id="disco-paradise" class="text-2xl font-bold text-center text-white">Disco Paradise</h1>
+      </a>
+    </div>
+
+    <div class="hidden md:flex items-center space-x-4">
+      <a href="{% url 'main:show_main' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+      <a href="{% url 'main:create_album_entry' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Add Product</a>
+      {% if user.is_authenticated %}
+        <span class="text-gray-300 mr-4">Welcome, {{ user.username }}</span>
+        <a href="{% url 'main:logout' %}" class="text-center bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-300">Logout</a>
+      {% else %}
+        <a href="{% url 'main:login' %}" class="text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2">Login</a>
+        <a href="{% url 'main:register' %}" class="text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">Register</a>
+      {% endif %}
+    </div>
+
+    <div class="md:hidden flex items-center">
+      <button id="mobile-menu-button" class="text-gray-300 hover:bg-gray-700 hover:text-white px-2 py-1 rounded-md focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="mobile-menu" class="hidden md:hidden px-2 pt-2 pb-3 space-y-1 sm:px-3">
+  <a href="{% url 'main:show_main' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+  <a href="{% url 'main:create_album_entry' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Add Product</a>
+  {% if user.is_authenticated %}
+    <span class="block text-gray-300 px-3 py-2">Welcome, {{ user.username }}</span>
+    <a href="{% url 'main:logout' %}" class="block text-center bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition duration-300">Logout</a>
+  {% else %}
+    <a href="{% url 'main:login' %}" class="block text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2">Login</a>
+    <a href="{% url 'main:register' %}" class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">Register</a>
+  {% endif %}
+</div>
+
+<script>
+  document.getElementById('mobile-menu-button').addEventListener('click', function() {
+    var menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+  });
+</script>
+```

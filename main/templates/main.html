@@ -1,75 +1,74 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Disco Paradise</title>
+{% endblock meta %}
+
 {% block content %}
 {% include 'navbar.html' %}
 
-<h1>Disco Paradise</h1>
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-800 flex flex-col">
+    <!-- Profile Information Section -->
+    <div class="px-3 mb-4">
+        <div class="flex rounded-md items-center bg-red-600 py-2 px-4 w-fit">
+            <h1 id="nama-refalino-shahzada-ghassanai" class="text-white text-center">Nama: Refalino Shahzada Ghassanai</h1>
+        </div>
+        <h5 id="kelas-pbp-c" class="text-gray-300">Kelas: PBP C</h5>
+    </div>
 
-<h5>Nama    : Refalino Shahzada Ghassanai</h5>
-<h5>Kelas   : PBP C</h5>
+    <!-- Album Info Display -->
+    <div class="p-2 mb-6 relative">
+        <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
+            {% include "card_info.html" with title='Nama' value=name %}
+            {% include "card_info.html" with title='NPM' value=npm %}
+            {% include "card_info.html" with title='Kelas' value=kelas %}
+        </div>
 
-<h5>Name: </h5>
-<p> {{ name }}</p>
-<h5>Price: </h5>
-<p>{{ price }}</p>
-<h5>Description: </h5>
-<p>{{ description }}</p> 
-<h5>Date of Distribution </h5>
-<p>{{ date_of_distribution }}</p>
-<h5>Stock Available: </h5>
-<p>{{ stock_available }}</p>
-<h5>Genre: </h5>
-<p>{{ genre }}</p>
+        <div class="w-full px-6 absolute top-[44px] left-0 z-20 hidden md:flex">
+            <div class="w-full min-h-4 bg-red-600"></div>
+        </div>
 
-<!-- IF THERE IS NOT DATA IN THE FORM -->
-{% if not album_entries %}
-<p>Belum ada data album pada Disco Paradise.</p>
-{% else %}
-<table>
-  <tr>
-    <th>Album Name</th>
-    <th>Price</th>
-    <th>Description</th>
-    <th>Date of Distribution</th>
-    <th>Stock Available</th>
-    <th>Genre</th>
-  </tr>
+        <div class="h-full w-full py-6 absolute top-0 left-0 z-20 md:hidden flex">
+            <div class="h-full min-w-4 bg-red-600 mx-auto"></div>
+        </div>
+    </div>
 
-  {% comment %} Berikut cara memperlihatkan data album di bawah baris ini 
-  {% endcomment %} 
-  {% for album_entry in album_entries %}
-  <tr>
-    <td>{{album_entry.name}}</td>
-    <td>{{album_entry.price}}</td>
-    <td>{{album_entry.description}}</td>
-    <td>{{album_entry.date_of_distribution}}</td>
-    <td>{{album_entry.stock_available}}</td>
-    <td>{{album_entry.genre}}</td>
-    <td>
-      <a href="{% url 'main:edit_album' album_entry.pk %}">
-          <button>
-              Edit
-          </button>
-      </a>
-    </td>
-    <td>
-      <a href="{% url 'main:delete_album' album_entry.pk %}">
-          <button>
-              Delete
-          </button>
-      </a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
-{% endif %}
+    <!-- Last Login Section -->
+    <div class="px-3 mb-4">
+        <div class="flex rounded-md items-center bg-red-600 py-2 px-4 w-fit">
+            <h1 id="last-login-last_login" class="text-white text-center">Last Login: {{last_login}}</h1>
+        </div>
+    </div>
 
-<br />
+    <!-- Add New Album Button -->
+    <div class="flex justify-end mb-6">
+        <a href="{% url 'main:create_album_entry' %}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+            Add New Album Entry
+        </a>
+    </div>
 
-<a href="{% url 'main:create_album_entry' %}">
-  <button>Add New Album Entry</button>
-</a>
-<a href="{% url 'main:logout' %}">
-  <button>Logout</button>
-</a>
-<h5>Sesi terakhir login: {{ last_login }}</h5>
+    <!-- Album List Section -->
+    {% if album_entries %}
+    <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
+        <!-- Album Card Display -->
+        {% for album_entry in album_entries %}
+            {% include "card_album.html" with album_entry=album_entry %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+        <img src="{% static 'image/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4">
+        <p class="text-gray-300">Belum ada data album pada Disco Paradise.</p>
+    </div>
+    {% endif %}
+
+    <!-- Logout Section -->
+    <div class="flex justify-end mt-6">
+        <a href="{% url 'main:logout' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+            Logout
+        </a>
+    </div>
+</div>
+
 {% endblock content %}
