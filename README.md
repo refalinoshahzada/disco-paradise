@@ -1,4 +1,4 @@
-# disco-paradise
+# Disco Paradise
 ## TUGAS 2
 ## [Visit Disco Paradise here!](https://refalino-shahzada-discoparadisee.pbp.cs.ui.ac.id/)
 
@@ -1079,3 +1079,35 @@ Untuk membuat navbar, saya mengisi berkas `navbar.html` sebagai berikut:
   });
 </script>
 ```
+
+## TUGAS 6
+### 1. Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+Karena Javascript merupakan merupakan bahasa pemrograman yang dapat dijalankan di *client-side* maupun *server-side* oleh karena itu, Ia memiliki banyak manfaat dalam pengembangan aplikasi web. Beberapa dari manfaat tersebut adalah:
+  - Interaktifitas yang tinggi
+  - Memberikan *User Experience* yang lebih baik
+  - Memungkinkan pengembangan *Single Page Application*
+  - Validasi data di *client-side*
+  - Pengoptimalan kinerja di sisi pengguna
+
+### 2. Jelaskan fungsi dari penggunaan `await` ketika kita menggunakan `fetch()`! Apa yang akan terjadi jika kita tidak menggunakan `await`?
+Fungsi dari penggunaan `await` ketika menggunakan `fetch()` dalam Javascript adalah untuk menunggu selesainya *promise* yang dihasilkan oleh `fetch()`.
+1. `fetch()` mengembalikan *promise*
+2. Fungsi `await` digunakan secara asinkron untuk menunggu selesai eksekusi *promise*
+
+Yang terjadi apabila tidak menggunakan `await` adalah karena `fetch()` tidak mengembalikan *promise*, jika kita tidak menunggukan `await` eksekusi akan berlanjut tanpa menunggu. Artinya `response` belum berisi hasil HTTP yang sebenernya kita mencoba memanggil `response.json()`. Akibatnya `response.json()` mungkin gagal atau mengembalikan *promise* yang belom selesai.
+
+### 3. Mengapa kita perlu menggunakan decorator `csrf_exempt` pada view yang akan digunakan untuk `AJAX POST`?
+Kita perlu menggunakan decorator `csrf_exempt` pada view Django yang digunakan untuk `AJAX POST` dalam situasi tertentu karena Django secara default menerapkan mekanisme perlindungan CSRF (Cross-Site Request Forgery) pada setiap permintaan POST untuk keamanan. CSRF melindungi aplikasi dari serangan yang memanfaatkan otentikasi pengguna untuk melakukan aksi yang tidak sah.
+
+### 4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Sebenarnya, pembersihan data input juga dapat dilakukan pada *frontend*. Namun, ada beberapa alasan penting mengapa pembersihan data di *backend* juga tetap wajib dilakukan yaitu:
+1. Keamanan Data 
+  Validasi dan pembersihan di backend sangat penting untuk melindungi aplikasi dari berbagai serangan seperti *Injection Attacks*, *Bypassing Frontend Validation* dll.
+2. Integritas Data 
+  Backend bertanggung jawab atas integritas data yang disimpan dalam sistem. Data yang tidak divalidasi dengan benar dapat merusak struktur data di database. Sebagai contoh, misal ada pengguna mengirimkan email dengan format yang salah, validasi *frontend* dapat terlewati, dan tanpa adanya validasi pada *backend* data yang salah bisa masuk ke dalam sistem dan menyebabkan masalah pada database.
+3. Pemrosesan yang konsisten
+  Pengunaan *backend* memastikan bahwa setiap permintaan diperlakukan dengan cara yang sama dan diproses secara konsisten.
+4. Keterbatasan *frontend*
+  Tidak semua jenis validasi dapat dilakukan secara efektif pada *frontend*. Beberapa validasi seperti memeriksa apakah data sudah ada di database, memerlukan akses ke sumber daya *backend* dan database. 
+
+### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
