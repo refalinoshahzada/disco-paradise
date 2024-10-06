@@ -7,37 +7,46 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="flex flex-col min-h-screen bg-gray-100">
-  <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
-    <h1 class="text-3xl font-bold text-center mb-8 text-black">Add New Album Entry</h1>
-
-    <div class="bg-white shadow-md rounded-lg p-6 form-style">
-      <form method="POST" class="space-y-6">
-        {% csrf_token %}
+<div class="min-h-screen flex items-center justify-center w-screen bg-gradient-to-b from-gray-800 to-black py-12 px-4 sm:px-6 lg:px-8"> <!-- Gradient background -->
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-green-400">Add New Album Entry</h2> <!-- Spotify green title -->
+    </div>
+    <form class="mt-8 space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg" method="POST"> <!-- Dark form background with padding -->
+      {% csrf_token %}
+      <div class="rounded-md shadow-sm -space-y-px">
         {% for field in form %}
-          <div class="flex flex-col">
-            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700">
-              {{ field.label }}
-            </label>
-            <div class="w-full">
-              {{ field }}
-            </div>
-            {% if field.help_text %}
-              <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+          <div class="mb-4">
+            <label for="{{ field.id_for_label }}" class="block text-green-400 font-semibold">{{ field.label }}</label> <!-- Spotify green labels -->
+            <input id="{{ field.id_for_label }}" name="{{ field.name }}" type="{{ field.field.widget.input_type }}" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-400 text-gray-100 bg-gray-800 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="{{ field.label }}">
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="text-sm text-red-400 mt-2">{{ error }}</p> <!-- Red error text -->
+              {% endfor %}
             {% endif %}
-            {% for error in field.errors %}
-              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %}
           </div>
         {% endfor %}
-        <div class="flex justify-center mt-6">
-          <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out w-full">
-            Add Album Entry
-          </button>
-        </div>
-      </form>
+      </div>
+
+      <div>
+        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+          Add New Album Entry
+        </button>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ message }}</span>
+      </div>
+      {% endfor %}
     </div>
+    {% endif %}
+    
+    <!-- Removed the register link -->
+    
   </div>
 </div>
-
-{% endblock %}
+{% endblock content %}
