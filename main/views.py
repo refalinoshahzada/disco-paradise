@@ -10,18 +10,18 @@ from django.contrib import messages
 import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 @login_required(login_url='/login')
 def show_main(request):
-    album_entries = AlbumEntry.objects.filter(user=request.user)
 
     context = {
         'name': request.user.username,
         'npm': 2306152203,
         'kelas': 'PBP C',
         'last_login': request.COOKIES['last_login'],
-        'album_entries': album_entries
     }
 
     return render(request, "main.html", context)
@@ -39,13 +39,31 @@ def create_album_entry(request):
     context = {'form': form}
     return render(request, "create_album_entry.html", context)
 
+def add_album_entry_ajax(request):
+    name = request.POST.get("name")
+    price = request.POST.get("price")
+    description = request.POST.get("description")
+    date_of_distribution = request.POST.get("date_of_distribution")
+    stock_available = request.POST.get("stock_available")
+    genre = request.POST.get("genre")
+    user = request.user
+
+    new_album = AlbumEntry(
+        name=name, price=price,
+        description=description, date_of_distribution=date_of_distribution,
+        stock_available=stock_available, genre=genre, user=user
+    )
+    new_album.save()
+
+    return HttpResponse(b"CREATED", status=201)
+
 # Show data through XML and JSON
 def show_xml(request):
-    data = AlbumEntry.objects.all()
+    data = AlbumEntry.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = AlbumEntry.objects.all()
+    data = AlbumEntry.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):

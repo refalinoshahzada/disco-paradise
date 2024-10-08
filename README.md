@@ -1111,3 +1111,13 @@ Sebenarnya, pembersihan data input juga dapat dilakukan pada *frontend*. Namun, 
   Tidak semua jenis validasi dapat dilakukan secara efektif pada *frontend*. Beberapa validasi seperti memeriksa apakah data sudah ada di database, memerlukan akses ke sumber daya *backend* dan database. 
 
 ### 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+- [x] Mengubah tugas 5 yang telah dibuat sebelumnya menjadi menggunakan AJAX.
+  - [x] AJAX `GET`
+    - [x] Ubahlah kode cards data mood agar dapat mendukung AJAX GET.
+    - [x] Lakukan pengambilan data mood menggunakan AJAX GET. Pastikan bahwa data yang diambil hanyalah data milik pengguna yang logged-in.
+  - [x] AJAX `POST` 
+    - [x] Buatlah sebuah tombol yang membuka sebuah modal dengan form untuk menambahkan mood.
+    - [x] Buatlah fungsi view baru untuk menambahkan mood baru ke dalam basis data.
+    - [x] Buatlah path `/create-ajax/` yang mengarah ke fungsi view yang baru kamu buat.
+    - [x] Hubungkan form yang telah kamu buat di dalam modal kamu ke path `/create-ajax/`.
+    - [x] Lakukan refresh pada halaman utama secara asinkronus untuk menampilkan daftar mood terbaru tanpa reload halaman utama secara keseluruhan.

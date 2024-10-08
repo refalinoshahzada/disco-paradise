@@ -8,23 +8,20 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<!-- Main Content Section -->
-<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gradient-to-b from-gray-800 to-black flex flex-col items-center"> <!-- Updated to gradient background -->
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gradient-to-b from-gray-800 to-black flex flex-col items-center">
     <div class="w-full max-w-7xl">
-        <!-- Profile Information Section -->
         <div class="text-white rounded-lg shadow-lg mb-8 p-6 flex flex-col md:flex-row items-center justify-between bg-gray-800">
             <div class="mb-4 md:mb-0">
-                <h1 id="nama-refalino-shahzada-ghassani" class="text-2xl font-bold">Refalino Shahzada Ghassani</h1>
-                <h5 id="kelas-pbp-c" class="text-md text-gray-400">Kelas: PBP C</h5>
+                <h1 id="nama-refalino-shahzada-ghassani" class="text-2xl font-bold">{{ name }}</h1>
+                <h5 id="kelas-pbp-c" class="text-md text-gray-400">Kelas: {{ kelas }}</h5>
             </div>
             <div class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full cursor-pointer">
-                <p>Last Login: {{last_login}}</p>
+                Last Login: {{ last_login }}
             </div>
         </div>
 
-        <!-- Album Info Display -->
         <div class="mb-12">
-            <h2 class="text-2xl text-white font-bold mb-4 text-center">Your Profile Information</h2>
+            <h2 id="your-profile-information" class="text-2xl text-white font-bold mb-4 text-center">Your Profile Information</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {% include "card_info.html" with title='Nama' value=name %}
                 {% include "card_info.html" with title='NPM' value=npm %}
@@ -32,31 +29,15 @@
             </div>
         </div>
 
-        <!-- Add New Album Button -->
         <div class="flex justify-center mb-10">
-            <a href="{% url 'main:create_album_entry' %}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full shadow-md transition duration-300">
-                ➕ Add New Album
-            </a>
+            <button onclick="showModal()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">
+                ➕ Add New Album via AJAX
+            </button>
         </div>
 
-        <!-- Album List Section -->
-        {% if album_entries %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Album Card Display -->
-            {% for album_entry in album_entries %}
-                <div class="bg-gray-800 hover:bg-gray-700 text-white rounded-lg p-4 shadow-md transition duration-300">
-                    {% include "card_album.html" with album_entry=album_entry %}
-                </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
-            <img src="{% static 'image/sad-face.png' %}" alt="Sad face" class="w-32 h-32 mb-4">
-            <p class="text-gray-400">No album data found on Disco Paradise.</p>
-        </div>
-        {% endif %}
+        <div id="album_entry_cards"></div>
 
-        <!-- Logout Section -->
+
         <div class="flex justify-center mt-10">
             <a href="{% url 'main:logout' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-full shadow-md transition duration-300">
                 🚪 Logout
@@ -64,5 +45,172 @@
         </div>
     </div>
 </div>
+
+<div id="crudModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" onclick="hideModal()"></div>
+
+        <div id="crudModalContent" class="relative bg-gray-900 rounded-lg shadow-lg max-w-md w-full p-6 transition-all transform opacity-0 scale-95">
+            <h2 class="text-center text-3xl font-extrabold text-green-400 mb-6">Add New Album Entry via AJAX</h2>
+
+            <form id="albumForm" class="space-y-4">
+                {% csrf_token %}
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-green-400">Name</label>
+                    <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="price" class="block text-sm font-medium text-green-400">Price (Integer)</label>
+                    <input type="number" id="price" name="price" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-medium text-green-400">Description</label>
+                    <textarea id="description" name="description" rows="3" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50"></textarea>
+                </div>
+
+                <div>
+                    <label for="date_of_distribution" class="block text-sm font-medium text-green-400">Date of Distribution (Text)</label>
+                    <input type="text" id="date_of_distribution" name="date_of_distribution" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="stock_available" class="block text-sm font-medium text-green-400">Stock Available (Integer)</label>
+                    <input type="number" id="stock_available" name="stock_available" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="genre" class="block text-sm font-medium text-green-400">Genre (Text)</label>
+                    <input type="text" id="genre" name="genre" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <button type="submit" form="albumForm" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Submit Entry
+                    </button>
+                </div>
+            </form>
+
+            <button onclick="hideModal()" class="absolute top-0 right-0 mt-4 mr-4 text-gray-400 hover:text-white">
+                <span class="sr-only">Close</span>
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showModal() {
+        document.getElementById('crudModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('crudModalContent').classList.remove('opacity-0', 'scale-95');
+            document.getElementById('crudModalContent').classList.add('opacity-100', 'scale-100');
+        }, 20);
+    }
+
+    function hideModal() {
+        document.getElementById('crudModalContent').classList.remove('opacity-100', 'scale-100');
+        document.getElementById('crudModalContent').classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            document.getElementById('crudModal').classList.add('hidden');
+        }, 300);
+    }
+
+    function addAlbumEntry() {
+    fetch("{% url 'main:add_album_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector("#albumForm")),
+    })
+    .then(response => refreshAlbumEntries())
+
+    document.getElementById("albumForm").reset();
+    document.querySelector("[data-modal-toggle='crudmodal']").click();
+
+    }
+
+    async function getAlbum() {
+        return fetch("{% url 'main:show_json' %}").then((res) => res.json());
+    }
+
+
+    async function refreshAlbumEntries() {
+        document.getElementById("album_entry_cards").innerHTML = "";
+        document.getElementById("album_entry_cards").className = "";
+        const albums = await getAlbum();
+        let htmlString = "";
+        let classNameString = "";
+        if (albums.length === 0) {
+            classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+            htmlString = `
+                <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                    <img src="{% static 'image/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4">
+                    <p class="text-white text-center">No album data found on Disco Paradise.</p>
+                </div>
+            `;
+            } else {
+                // Loop through each album entry and build the HTML
+                classNameString = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+                albums.forEach(album => {
+                    htmlString += `
+                        <div class="relative break-inside-avoid">
+                        <div class="bg-gray-800 shadow-md rounded-lg mb-6 hover:bg-gray-700 transition duration-300 transform hover:scale-105">
+                            <div class="p-4">
+                            <h3 class="text-lg font-bold text-white mb-2">${album.fields.name}</h3>
+                            <p class="text-sm text-gray-400 mb-4">${album.fields.date_of_distribution}</p>
+                            <p class="text-green-500 font-semibold text-lg mb-1">Price: $${album.fields.price}</p>
+                            <p class="text-sm text-gray-300">${album.fields.description}</p>
+                            <div class="mt-4">
+                                <p class="text-sm text-gray-400 mb-1">Stock Available: ${album.fields.stock_available}</p>
+                                <p class="text-sm text-gray-400">Genre: ${album.fields.genre}</p>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 right-0 flex space-x-2 mt-2 mr-2">
+                            <a href="/edit-album/${album.pk}" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 4.379a3 3 0 014.243 4.243l-1.415 1.414-4.243-4.243 1.415-1.414zm-4.95 2.738l-5.03 5.031a1.5 1.5 0 00-.353.73l-.261 2.69a1.5 1.5 0 001.748 1.748l2.69-.261a1.5 1.5 0 00.73-.353l5.031-5.03-4.243-4.243z" />
+                            </svg>
+                            </a>
+                            <a href="/delete-album/${album.pk}" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            </a>
+                        </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById("album_entry_cards").className = classNameString;
+            document.getElementById("album_entry_cards").innerHTML = htmlString;
+    }
+    refreshAlbumEntries();
+
+
+
+    document.getElementById("albumForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        addAlbumEntry();
+    });
+</script>
 
 {% endblock content %}
