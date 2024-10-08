@@ -39,6 +39,8 @@ def create_album_entry(request):
     context = {'form': form}
     return render(request, "create_album_entry.html", context)
 
+@csrf_exempt
+@require_POST
 def add_album_entry_ajax(request):
     name = request.POST.get("name")
     price = request.POST.get("price")

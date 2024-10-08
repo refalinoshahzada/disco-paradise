@@ -1121,3 +1121,216 @@ Sebenarnya, pembersihan data input juga dapat dilakukan pada *frontend*. Namun, 
     - [x] Buatlah path `/create-ajax/` yang mengarah ke fungsi view yang baru kamu buat.
     - [x] Hubungkan form yang telah kamu buat di dalam modal kamu ke path `/create-ajax/`.
     - [x] Lakukan refresh pada halaman utama secara asinkronus untuk menampilkan daftar mood terbaru tanpa reload halaman utama secara keseluruhan.
+
+Cara implementasi:
+1. Pada berkas `views.py` saya import `csrf_exempt` dan `require_POST` terlebih dahulu
+2. Kemudian saya tambahkan fungsi `add_album_entry_ajax` pada berkas yang sama seperti berikut:
+```python
+@csrf_exempt
+@require_POST
+def add_album_entry_ajax(request):
+    name = request.POST.get("name")
+    price = request.POST.get("price")
+    description = request.POST.get("description")
+    date_of_distribution = request.POST.get("date_of_distribution")
+    stock_available = request.POST.get("stock_available")
+    genre = request.POST.get("genre")
+    user = request.user
+
+    new_album = AlbumEntry(
+        name=name, price=price,
+        description=description, date_of_distribution=date_of_distribution,
+        stock_available=stock_available, genre=genre, user=user
+    )
+    new_album.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```
+3. Tambahkan routing pada berkas `urls.py` dengan pertama import function tersebut dan menambahkan path tersendiri
+4. Pada berkas `views.py` saya hapus kedua baris berikut:
+```python
+album_entries = AlbumEntry.objects.filter(user=request.user)
+'album_entries': album_entries
+```
+5. Mengubah fungsi `show_xml` dan `show_json` dengan menggantikan variabel `data` sebagai berikut:
+```python
+data = AlbumEntry.objects.filter(user=request.user)
+```
+6. Kemudian pada `main.html` saya hapus bagian conditional ```{% if not album entries %}``` dan menggantikannya dengan menambahkan bagian kode berupa tag `div` baru seperti berikut:
+```html
+ <div id="album_entry_cards"></div>
+```
+7. Pada `main.html` tambahkan tag baru berupa `<script>` yang berisi dengan berbagai macam fungsi yang akan berperngaruh kepada aplikasi web. Untuk yang pertama saya tambahkan fungsi `getAlbum` untuk refresh data secara asinkronus.
+```javascript
+async function getAlbum() {
+    return fetch("{% url 'main:show_json' %}").then((res) => res.json());
+}
+```
+8. Kemudian saya tambahkan fungsi `refreshAlbumEntries` sebagai berikut:
+```javascript
+    async function refreshAlbumEntries() {
+        document.getElementById("album_entry_cards").innerHTML = "";
+        document.getElementById("album_entry_cards").className = "";
+        const albums = await getAlbum();
+        let htmlString = "";
+        let classNameString = "";
+        if (albums.length === 0) {
+            classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+            htmlString = `
+                <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                    <img src="{% static 'image/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4">
+                    <p class="text-white text-center">No album data found on Disco Paradise.</p>
+                </div>
+            `;
+            } else {
+                // Loop through each album entry and build the HTML
+                classNameString = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+                albums.forEach(album => {
+                    htmlString += `
+                        <div class="relative break-inside-avoid">
+                        <div class="bg-gray-800 shadow-md rounded-lg mb-6 hover:bg-gray-700 transition duration-300 transform hover:scale-105">
+                            <div class="p-4">
+                            <h3 class="text-lg font-bold text-white mb-2">${album.fields.name}</h3>
+                            <p class="text-sm text-gray-400 mb-4">${album.fields.date_of_distribution}</p>
+                            <p class="text-green-500 font-semibold text-lg mb-1">Price: $${album.fields.price}</p>
+                            <p class="text-sm text-gray-300">${album.fields.description}</p>
+                            <div class="mt-4">
+                                <p class="text-sm text-gray-400 mb-1">Stock Available: ${album.fields.stock_available}</p>
+                                <p class="text-sm text-gray-400">Genre: ${album.fields.genre}</p>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 right-0 flex space-x-2 mt-2 mr-2">
+                            <a href="/edit-album/${album.pk}" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 4.379a3 3 0 014.243 4.243l-1.415 1.414-4.243-4.243 1.415-1.414zm-4.95 2.738l-5.03 5.031a1.5 1.5 0 00-.353.73l-.261 2.69a1.5 1.5 0 001.748 1.748l2.69-.261a1.5 1.5 0 00.73-.353l5.031-5.03-4.243-4.243z" />
+                            </svg>
+                            </a>
+                            <a href="/delete-album/${album.pk}" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full p-2 transition duration-300 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            </a>
+                        </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById("album_entry_cards").className = classNameString;
+            document.getElementById("album_entry_cards").innerHTML = htmlString;
+    }
+    refreshAlbumEntries();
+
+
+
+    document.getElementById("albumForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        addAlbumEntry();
+    });
+```
+9. Saya tambahkan modal *Tailwind* pada `main.html` sebagai berikut:
+```html
+<div id="crudModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" onclick="hideModal()"></div>
+
+        <div id="crudModalContent" class="relative bg-gray-900 rounded-lg shadow-lg max-w-md w-full p-6 transition-all transform opacity-0 scale-95">
+            <h2 class="text-center text-3xl font-extrabold text-green-400 mb-6">Add New Album Entry via AJAX</h2>
+
+            <form id="albumForm" class="space-y-4">
+                {% csrf_token %}
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-green-400">Name</label>
+                    <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="price" class="block text-sm font-medium text-green-400">Price (Integer)</label>
+                    <input type="number" id="price" name="price" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-medium text-green-400">Description</label>
+                    <textarea id="description" name="description" rows="3" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50"></textarea>
+                </div>
+
+                <div>
+                    <label for="date_of_distribution" class="block text-sm font-medium text-green-400">Date of Distribution (Text)</label>
+                    <input type="text" id="date_of_distribution" name="date_of_distribution" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="stock_available" class="block text-sm font-medium text-green-400">Stock Available (Integer)</label>
+                    <input type="number" id="stock_available" name="stock_available" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <label for="genre" class="block text-sm font-medium text-green-400">Genre (Text)</label>
+                    <input type="text" id="genre" name="genre" required class="mt-1 block w-full rounded-md bg-gray-800 border-gray-700 text-white shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
+                </div>
+
+                <div>
+                    <button type="submit" form="albumForm" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Submit Entry
+                    </button>
+                </div>
+            </form>
+
+            <button onclick="hideModal()" class="absolute top-0 right-0 mt-4 mr-4 text-gray-400 hover:text-white">
+                <span class="sr-only">Close</span>
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+```
+10. Setelah menambahkan modal, karena menggunakan *vanilla Tailwind CSS* class modal tidak termasuk. Oleh karena itu saya tambahkan pada bagian `<script>`.
+```javascript
+function showModal() {
+        document.getElementById('crudModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('crudModalContent').classList.remove('opacity-0', 'scale-95');
+            document.getElementById('crudModalContent').classList.add('opacity-100', 'scale-100');
+        }, 20);
+    }
+
+    function hideModal() {
+        document.getElementById('crudModalContent').classList.remove('opacity-100', 'scale-100');
+        document.getElementById('crudModalContent').classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            document.getElementById('crudModal').classList.add('hidden');
+        }, 300);
+    }
+```
+11. Saya tambahkan tombol baru untuk menambahkan produk baru dengan AJAX sebagai berikut:
+```html
+<div class="flex justify-center mb-10">
+    <button onclick="showModal()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">
+        ➕ Add New Album via AJAX
+    </button>
+</div>
+```
+12. Tambahkan fungsi baru pada `<script>` yang berfungsi untuk menambahkan produk baru sebagai berikut:
+```javascript
+function addAlbumEntry() {
+    fetch("{% url 'main:add_album_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector("#albumForm")),
+    })
+    .then(response => refreshAlbumEntries())
+
+    document.getElementById("albumForm").reset();
+    document.querySelector("[data-modal-toggle='crudmodal']").click();
+
+    }
+```
+13. Jangan lupa untuk menambahkan *event listener* seperti berikut:
+```javascript
+    document.getElementById("albumForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        addAlbumEntry();
+    });
+```
