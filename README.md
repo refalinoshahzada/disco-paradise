@@ -1334,3 +1334,4 @@ function addAlbumEntry() {
         addAlbumEntry();
     });
 ```
+14. Setelah melewati semua langkah diatas, saya tambahkan pelindungan aplikasi web saya dari serangan XSS serta pembersihannya melalui `strip_tags` dan `DOMPurify` 

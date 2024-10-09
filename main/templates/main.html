@@ -3,6 +3,7 @@
 
 {% block meta %}
 <title>Disco Paradise</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 {% endblock meta %}
 
 {% block content %}
@@ -170,6 +171,12 @@
                 // Loop through each album entry and build the HTML
                 classNameString = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
                 albums.forEach(album => {
+                    const name = DOMPurify.sanitize(album.fields.name);
+                    const price = DOMPurify.sanitize(album.fields.price);
+                    const description = DOMPurify.sanitize(album.fields.description);
+                    const date_of_distribution = DOMPurify.sanitize(album.fields.date_of_distribution);
+                    const stock_available = DOMPurify.sanitize(album.fields.stock_available);
+                    const genre = DOMPurify.sanitize(album.fields.genre);
                     htmlString += `
                         <div class="relative break-inside-avoid">
                         <div class="bg-gray-800 shadow-md rounded-lg mb-6 hover:bg-gray-700 transition duration-300 transform hover:scale-105">
@@ -210,6 +217,7 @@
     document.getElementById("albumForm").addEventListener("submit", (e) => {
         e.preventDefault();
         addAlbumEntry();
+        hideModal();
     });
 </script>
 

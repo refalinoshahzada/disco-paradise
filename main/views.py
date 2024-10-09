@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 
 # Create your views here.
 @login_required(login_url='/login')
@@ -42,12 +43,12 @@ def create_album_entry(request):
 @csrf_exempt
 @require_POST
 def add_album_entry_ajax(request):
-    name = request.POST.get("name")
-    price = request.POST.get("price")
-    description = request.POST.get("description")
-    date_of_distribution = request.POST.get("date_of_distribution")
-    stock_available = request.POST.get("stock_available")
-    genre = request.POST.get("genre")
+    name = strip_tags(request.POST.get("name"))
+    price = strip_tags(request.POST.get("price"))
+    description = strip_tags(request.POST.get("description"))
+    date_of_distribution = strip_tags(request.POST.get("date_of_di stribution"))
+    stock_available = strip_tags(request.POST.get("stock_available"))
+    genre = strip_tags(request.POST.get("genre"))
     user = request.user
 
     new_album = AlbumEntry(
